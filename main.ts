@@ -49,13 +49,21 @@ class Camera {
         this.core.drawOffsetX;
         this.core.drawOffsetY;
     }
+
+    public static getInstance(): Camera {
+        return new Camera();
+    }
 }
 
-class SceneInstance {
+class Scene {
     private core: scene.Scene;
 
     public constructor() {
         this.core = Dispatcher.fetchScene();
+    }
+
+    public extract(): scene.Scene {
+        return this.core;
     }
 }
 
