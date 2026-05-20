@@ -1,6 +1,6 @@
 {
     "name": "Coil",
-    "description": "A compat library of commonly used utilities by Chemthunder.",
+    "description": "A compact library of commonly used utilities by Chemthunder.",
     "dependencies": {
         "device": "*"
     },

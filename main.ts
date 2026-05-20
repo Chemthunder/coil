@@ -1,4 +1,4 @@
-// general utils
+// LOGGING
 function enablePrint() {
     game.consoleOverlay.setVisible(true, 1);
 }
@@ -9,6 +9,13 @@ function print(message: any, value?: any) {
     } else {
         console.log(message);
     }
+}
+
+// MIXIN
+namespace SpriteKind {
+    export const RenderElement = SpriteKind.create();
+    export const Placeholder = SpriteKind.create();
+    export const GuiElement = SpriteKind.create();
 }
 
 // SYSTEM
@@ -131,14 +138,6 @@ class Game {
     public run(s: () => void) {
         s();
     }
-
-    public dataCompound(a?: string): DataCompound {
-        return new DataCompound(this.name.toLowerCase() + a);
-    }
-
-    public quilt(): Quilt {
-        return new Quilt();
-    }
 }
 
 // REGISTRATION
@@ -247,12 +246,41 @@ namespace DataHelper {
     }
 }
 
+// IMAGERY
+class ExtractionLayer {
+    private image: Image;
+    private holder: Sprite;
+
+    public constructor(width: number, height: number, layer?: number) {
+        this.image = image.create(width, height);
+
+        this.holder = sprites.create(this.image, SpriteKind.RenderElement);
+        this.holder.z = layer;
+    }
+
+    public extract(): Image {
+        return this.image;
+    }
+
+    public getHolder(): Sprite {
+        return this.holder;
+    }
+}
+
+function createImage(width: number, height: number, preColor?: number) {
+    let toReturn = image.create(width, height);
+    toReturn.fill(preColor);
+    return toReturn;
+}
+
+
+
 const Coil = new Game(
     "Coil",
     {
         author: "Chemthunder",
-        version: 1.0,
+        version: 1.2,
         license: "ARR",
-        desc: "A compat library of commonly used utilities by Chemthunder."
+        desc: "A compact library of commonly used utilities by Chemthunder."
     }
 );
