@@ -72,6 +72,10 @@ class Scene {
     public extract(): scene.Scene {
         return this.core;
     }
+
+    public static getInstance(): Scene {
+        return new Scene();
+    }
 }
 
 // BUILDING
@@ -140,6 +144,17 @@ class Game {
     }
 }
 
+namespace MetaDataBuilder {
+    export function build(author: string, version: number, license: string, desc: string): any {
+        return {
+            author: author,
+            version: version,
+            license: license,
+            desc: desc
+        }
+    }
+}
+
 // REGISTRATION
 class RegistryEntry<V> {
     private id: string;
@@ -166,7 +181,7 @@ class Quilt {
         this.entries = [];
     }
 
-    public register <V>(id: string, obj: V): V {
+    public register<V>(id: string, obj: V): V {
         let packedEntry = new RegistryEntry<V>(id, obj);
         this.entries.push(packedEntry);
         return obj;
@@ -247,23 +262,71 @@ namespace DataHelper {
 }
 
 // IMAGERY
-class ExtractionLayer {
+class RenderLayer {
     private image: Image;
     private holder: Sprite;
 
-    public constructor(width: number, height: number, layer?: number) {
+    public constructor(width: number, height: number) {
         this.image = image.create(width, height);
 
-        this.holder = sprites.create(this.image, SpriteKind.RenderElement);
-        this.holder.z = layer;
+        this.holder = sprites.create(
+            this.image,
+            SpriteKind.RenderElement
+        );
     }
 
     public extract(): Image {
         return this.image;
     }
 
-    public getHolder(): Sprite {
+    public access(): Sprite {
         return this.holder;
+    }
+}
+
+class ExecutableRenderLayer {
+    private image: Image;
+    private holder: Sprite;
+
+    private renderState: boolean;
+
+    public constructor(width: number, height: number) {
+        this.image = image.create(width, height);
+
+        this.renderState = false;
+    }
+
+    public extract(): Image {
+        return this.image;
+    }
+
+    public access(): Sprite {
+        if (this.holder != null) {
+            return this.holder;
+        }
+        return null;
+    }
+
+    public execute(state: boolean) {
+        if (state) {
+            if (this.holder == null) {
+                this.holder = sprites.create(this.image, SpriteKind.RenderElement);
+                this.renderState = true;
+            } else {
+                throw Exception.of("Attempting to create existing ExecutableRenderLayer!");
+            }
+        } else {
+            if (this.holder != null) {
+                sprites.destroy(this.holder);
+                this.renderState = false;
+            } else {
+                throw Exception.of("Attempting to destroy non-existing ExecutableRenderLayer!");
+            }
+        }
+    }
+
+    public getRenderState(): boolean {
+        return this.renderState;
     }
 }
 
@@ -273,8 +336,52 @@ function createImage(width: number, height: number, preColor?: number) {
     return toReturn;
 }
 
+// TIME
+class Countdown {
+    private duration: number;
 
+    private end: () => void;
+    private tick: () => void;
 
+    public constructor(duration: number) {
+        this.duration = duration;
+    }
+
+    public onTick(f: () => void) {
+        this.tick = f;
+    }
+
+    public onEnd(f: () => void) {
+        this.end = f;
+    }
+
+    public begin() {
+        forever(function () {
+            if (this.duration > 0) {
+                this.duration -= 1;
+                if (this.tick != null) {
+                    this.tick();
+                }
+
+                if (this.duration == 0) {
+                    if (this.end != null) {
+                        this.end();
+                    }
+                }
+            }
+        });
+    }
+
+    public getCurrentDuration(): number {
+        return this.duration;
+    }
+
+    public pauseUntilCompleted() {
+        pause(this.duration);
+    }
+}
+
+// END
 const Coil = new Game(
     "Coil",
     {
