@@ -381,6 +381,13 @@ class Countdown {
     }
 }
 
+// SPRITE
+function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
+    for (let flag of flags) {
+        sprite.setFlag(flag, true);
+    }
+}
+
 // END
 const Coil = new Game(
     "Coil",
