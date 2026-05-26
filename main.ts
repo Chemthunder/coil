@@ -401,13 +401,60 @@ class Runnable {
     }
 }
 
+class JsonObject {
+    private core: any;
+
+    public constructor() {
+        this.core = {};
+    }
+
+    public import(id: string, value: any) {
+        this.core[id] = value;
+    }
+
+    public delete(id: string) {
+        delete this.core[id];
+    }
+
+    public export() {
+        return this.core;
+    }
+}
+
+class User {
+    private datePrint: string;
+    private name: string;
+    private uid: string;
+
+    public constructor() {
+        let t = browserEvents.currentTime();
+        let dd = browserEvents.getDayOfMonth(t);
+        let mm = browserEvents.getMonth(t) + 1;
+        let yy = browserEvents.getYear(t);
+
+        this.datePrint = `${dd}//${mm}//${yy}`;
+        print(this.datePrint);
+
+        this.uid = this.generateUid();
+        print(this.uid);
+    }
+
+    public generateUid(): string {
+        return `${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}-${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}-${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}-${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}`;
+    }
+}
+
+
 // END
 const Coil = new Game(
     "Coil",
     {
         author: "Chemthunder",
-        version: 1.2,
+        version: 1.3,
         license: "ARR",
         desc: "A compact library of commonly used utilities by Chemthunder."
     }
 );
+
+enablePrint()
+let a = new User();
