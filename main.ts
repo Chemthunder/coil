@@ -388,6 +388,19 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
     }
 }
 
+// OTHER
+class Runnable {
+    private toRun: () => void;
+
+    public constructor(toRun: () => void) {
+        this.toRun = toRun;
+    }
+
+    public run() {
+        this.toRun();
+    }
+}
+
 // END
 const Coil = new Game(
     "Coil",
