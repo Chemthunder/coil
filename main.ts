@@ -389,6 +389,9 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
 }
 
 // OTHER
+/**
+ * A function that can be stored with code, then run at any time.
+ */
 class Runnable {
     private toRun: () => void;
 
@@ -401,6 +404,30 @@ class Runnable {
     }
 }
 
+/**
+ * A collection of functions that can all be run at any time.
+ */
+class Payload {
+    private operations: Function[];
+
+    public constructor() {
+        this.operations = [];
+    }
+
+    public attach(value: Function) {
+        this.operations.push(value);
+    }
+
+    public send() {
+        this.operations.forEach(function (value: Function) {
+            value();
+        });
+    }
+}
+
+/**
+ * Used to build a JSON from parameters.
+ */
 class JsonObject {
     private core: any;
 
@@ -421,30 +448,6 @@ class JsonObject {
     }
 }
 
-class User {
-    private datePrint: string;
-    private name: string;
-    private uid: string;
-
-    public constructor() {
-        let t = browserEvents.currentTime();
-        let dd = browserEvents.getDayOfMonth(t);
-        let mm = browserEvents.getMonth(t) + 1;
-        let yy = browserEvents.getYear(t);
-
-        this.datePrint = `${dd}//${mm}//${yy}`;
-        print(this.datePrint);
-
-        this.uid = this.generateUid();
-        print(this.uid);
-    }
-
-    public generateUid(): string {
-        return `${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}-${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}-${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}-${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}${randint(0, 9)}`;
-    }
-}
-
-
 // END
 const Coil = new Game(
     "Coil",
@@ -455,6 +458,3 @@ const Coil = new Game(
         desc: "A compact library of commonly used utilities by Chemthunder."
     }
 );
-
-enablePrint()
-let a = new User();

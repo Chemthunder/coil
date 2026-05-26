@@ -2,8 +2,7 @@
     "name": "Coil",
     "description": "A compact library of commonly used utilities by Chemthunder.",
     "dependencies": {
-        "device": "*",
-        "browser-events": "*"
+        "device": "*"
     },
     "files": [
         "main.ts",
