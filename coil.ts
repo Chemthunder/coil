@@ -7,6 +7,8 @@ function enablePrint() {
         true,
         1
     );
+
+    OnPrintEnabled.deploy();
 }
 
 /**
@@ -22,6 +24,8 @@ function print(message: any, value?: any) {
     } else {
         console.log(message);
     }
+
+    OnPrint.deploy();
 }
 
 // MIXIN
@@ -222,6 +226,7 @@ class Entries {
         );
 
         this.entries.push(packedEntry);
+        OnRegister.deploy();
         return obj;
     }
 
@@ -231,9 +236,11 @@ class Entries {
 
     public getEntries(): any[] {
         let l: any[] = [];
+
         this.entries.forEach(function (value: RegistryEntry<any>) {
             l.push(value.getObj());
         });
+        
         return l;
     }
 
@@ -414,6 +421,8 @@ class ToggleableScreenImage {
                 throw Exception.of("Attempting to destroy non-existing ExecutableRenderLayer!");
             }
         }
+
+        OnToggleableExecuted.deploy();
     }
 
     public getRenderState(): boolean {
@@ -473,7 +482,10 @@ class Property<T> {
     }
 
     public static of<T>(name: string, value: T): Property<T> {
-        return new Property<T>(name, value);
+        return new Property<T>(
+            name,
+            value
+        );
     }
 }
 
@@ -491,18 +503,31 @@ class Config {
     }
 
     public write<T>(s: string, v: T): void {
-        this.values.push(Property.of(s, v));
+        this.values.push(
+            Property.of(
+                s,
+                v
+            )
+        );
+        OnConfigWritten.deploy();
     }
 
     public writeEntries(p: Property<any>[]) {
         this.values = p;
+
+        p.forEach(value => {
+            OnConfigWritten.deploy();
+        });
     }
 
     public sync(): void {
         let loader = new JsonObject();
 
         this.values.forEach(function (value: Property<any>) {
-            loader.import(value.getName(), value.getValue());
+            loader.import(
+                value.getName(),
+                value.getValue()
+            );
         });
 
         this.core = loader.export();
@@ -590,3 +615,10 @@ function requireNonNull<T>(value: T, ifNull: () => void): T {
         return value;
     }
 }
+
+// EVENTS
+const OnRegister = new Payload();
+const OnToggleableExecuted = new Payload();
+const OnConfigWritten = new Payload();
+const OnPrint = new Payload();
+const OnPrintEnabled = new Payload();

@@ -11,8 +11,8 @@ const Coil = new Game(
 const CoilConfig = new Config();
 CoilConfig.writeEntries(
     [
-        Property.of("IsPublicRelease", true),
-        Property.of("MaxSprites", 2)
+        Property.of("IsPublicRelease", false),
+        Property.of("MaxSprites", 500)
     ]
 );
 CoilConfig.sync();
