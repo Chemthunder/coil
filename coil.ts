@@ -183,7 +183,7 @@ class RegistryEntry<V> {
     }
 }
 
-class Quilt {
+class Entrypoint {
     private entries: RegistryEntry<any>[];
 
     public constructor() {
@@ -200,14 +200,22 @@ class Quilt {
         return obj;
     }
 
-    public getEntries(): RegistryEntry<any>[] {
+    public getCoreEntries(): RegistryEntry<any>[] {
         return this.entries;
     }
 
-    public findEntry(id: string): any {
+    public getEntries(): any[] {
+        let l: any[] = [];
+        this.entries.forEach(function (value: RegistryEntry<any>) {
+            l.push(value.getObj());
+        });
+        return l;
+    }
+
+    public lookup(id: string): any {
         for (let e of this.entries) {
             if (e.getId() == id) {
-                return id;
+                return e.getObj();
                 break;
             }
         }
@@ -318,7 +326,7 @@ class RenderLayer {
     }
 }
 
-class ExecutableRenderLayer {
+class ToggleableRenderLayer {
     private image: Image;
     private holder: Sprite;
 
