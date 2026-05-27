@@ -1,6 +1,3 @@
-
-
-
 const Coil = new Game(
     "Coil",
     {
@@ -14,7 +11,8 @@ const Coil = new Game(
 const CoilConfig = new Config();
 CoilConfig.writeEntries(
     [
-        Property.of("IsPublicRelease", true)
+        Property.of("IsPublicRelease", true),
+        Property.of("MaxSprites", 2)
     ]
 );
 CoilConfig.sync();
@@ -34,6 +32,18 @@ module Coil_Core {
     if (CoilConfig.fetch("IsPublicRelease")) {
         coilDetails.forEach(value => print(value));
     }
+}
+
+module Coil_Internal {
+    forever(function () {
+        let maxSprites: number = CoilConfig.fetch("MaxSprites");
+        let sc = Scene.getInstance();
+
+        if (sc.extract().allSprites.length > (maxSprites - 1)) {
+            print("Current amount of sprites", sc.extract().allSprites.length);
+            throw Exception.of("Amount of active sprites exceeds CoilConfig#MaxSprites!");
+        }
+    });
 }
 
 /**
