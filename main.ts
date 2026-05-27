@@ -46,6 +46,7 @@ module Coil_Internal {
     });
 }
 
+
 /**
  * DEPRECATED FEATURES
  * @ can be used with functions as a 'decorator', allowing for code to be run (@sealed)
