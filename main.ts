@@ -1,4 +1,5 @@
-const src = "https://github.com/Chemthunder/coil";
+
+
 
 const Coil = new Game(
     "Coil",
@@ -18,26 +19,33 @@ CoilConfig.writeEntries(
 );
 CoilConfig.sync();
 
-const coilDetails = [
-    `~~~~ Coil ${Coil.getMetaData().getVersion()} ~~~~`,
-    `Owned by ${Coil.getMetaData().getAuthor()}`,
-    `Licensed under the ${Coil.getMetaData().getLicense()} license!`,
-    `Thank you for using Coil!`,
-    `Source code can be found here < ${src} >`,
-    `~~~~ <><><> ~~~~`
-];
+module Coil_Core {
+    export const src = "https://github.com/Chemthunder/coil";
 
-if (CoilConfig.fetch("IsPublicRelease")) {
-    coilDetails.forEach(value => print(value));
+    export const coilDetails = [
+        `~~~~ Coil ${Coil.getMetaData().getVersion()} ~~~~`,
+        `Owned by ${Coil.getMetaData().getAuthor()}`,
+        `Licensed under the ${Coil.getMetaData().getLicense()} license!`,
+        `Thank you for using Coil!`,
+        `Source code can be found here < ${src} >`,
+        `~~~~ <><><> ~~~~`
+    ];
+
+    if (CoilConfig.fetch("IsPublicRelease")) {
+        coilDetails.forEach(value => print(value));
+    }
 }
 
 /**
  * DEPRECATED FEATURES
  * @ can be used with functions as a 'decorator', allowing for code to be run (@sealed)
  * Usage of `namespace` can instead be `module`,
- * module Test {
- *  export const i = 0;
- * }
+ *  module Test {
+ *      export const i = 0;
+ *  }
  * 
- * print(Test.i);
+ *  print(Test.i);
+ * 
+ * Triple nested functions cannot use simplistic math operations.
+ * function () {function () {function () {i++;}}}
  */
