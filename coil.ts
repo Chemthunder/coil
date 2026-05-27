@@ -234,6 +234,47 @@ class Entrypoint {
     }
 }
 
+class SpecializedEntrypoint<T> {
+    private entries: RegistryEntry<T>[];
+
+    public constructor() {
+        this.entries = [];
+    }
+
+    public register(id: string, obj: T): T {
+        let packedEntry = new RegistryEntry<T>(
+            id,
+            obj
+        );
+
+        this.entries.push(packedEntry);
+        return obj;
+    }
+
+    public getCoreEntries(): RegistryEntry<T>[] {
+        return this.entries;
+    }
+
+    public getEntries(): any[] {
+        let l: any[] = [];
+        this.entries.forEach(function (value: RegistryEntry<T>) {
+            l.push(value.getObj());
+        });
+        return l;
+    }
+
+    public lookup(id: string): any {
+        for (let e of this.entries) {
+            if (e.getId() == id) {
+                return e.getObj();
+                break;
+            }
+        }
+
+        return null;
+    }
+}
+
 // DATA
 class DataCompound {
     private prefix: string;
@@ -524,3 +565,21 @@ function requireNonNull<T>(value: T, ifNull: () => void): T {
         return value;
     }
 }
+
+enablePrint()
+
+class Test<T> {
+    private value: T;
+
+    public constructor(value: T) {
+        this.value = value;
+    }
+
+    public static getType(t: Test<any>): any {
+        return typeof t.value;
+    }
+}
+
+let a = new Test<string>("a");
+
+print(Test.getType(a));
