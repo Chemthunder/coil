@@ -1,4 +1,7 @@
 // LOGGING
+/**
+ * Enables the on-screen console for printing.
+ */
 function enablePrint() {
     game.consoleOverlay.setVisible(
         true,
@@ -6,6 +9,10 @@ function enablePrint() {
     );
 }
 
+/**
+ * Prints a value to the console.
+ * @param message The message to print.
+ */
 function print(message: any, value?: any) {
     if (value != null) {
         console.logValue(
@@ -26,12 +33,19 @@ namespace SpriteKind {
 
 // SYSTEM
 namespace Exception {
+    /**
+     * Completes and throws an Exception when combined with throw.
+     * @param reason The reason for the Exception to be thrown.
+     */
     export function of(reason: string): string {
         return reason;
     }
 }
 
 namespace Dispatcher {
+    /**
+     * Gets the current game scene.
+     */
     export function fetchScene(): scene.Scene {
         return game.currentScene();
     }
@@ -154,6 +168,13 @@ class Game {
 }
 
 namespace MetaDataBuilder {
+    /**
+     * Creates and returns game meta data as a json.
+     * @param author The author of the game.
+     * @param version The version of the game.
+     * @param license The license of the game.
+     * @param desc The description of the game.
+     */
     export function build(author: string, version: number, license: string, desc: string): any {
         return {
             author: author,
@@ -183,11 +204,15 @@ class RegistryEntry<V> {
     }
 }
 
-class Entrypoint {
+class Entries {
     private entries: RegistryEntry<any>[];
 
-    public constructor() {
+    private constructor() {
         this.entries = [];
+    }
+
+    public static create() {
+        return new Entries();
     }
 
     public register<V>(id: string, obj: V): V {
@@ -234,47 +259,6 @@ class Entrypoint {
     }
 }
 
-class SpecializedEntrypoint<T> {
-    private entries: RegistryEntry<T>[];
-
-    public constructor() {
-        this.entries = [];
-    }
-
-    public register(id: string, obj: T): T {
-        let packedEntry = new RegistryEntry<T>(
-            id,
-            obj
-        );
-
-        this.entries.push(packedEntry);
-        return obj;
-    }
-
-    public getCoreEntries(): RegistryEntry<T>[] {
-        return this.entries;
-    }
-
-    public getEntries(): any[] {
-        let l: any[] = [];
-        this.entries.forEach(function (value: RegistryEntry<T>) {
-            l.push(value.getObj());
-        });
-        return l;
-    }
-
-    public lookup(id: string): any {
-        for (let e of this.entries) {
-            if (e.getId() == id) {
-                return e.getObj();
-                break;
-            }
-        }
-
-        return null;
-    }
-}
-
 // DATA
 class DataCompound {
     private prefix: string;
@@ -310,11 +294,21 @@ class DataCompound {
 }
 
 namespace DataHelper {
+    /**
+     * Returns a prefixed data path.
+     * @param path The path to use.
+     * @param prefix The prefix for the path.
+     */
     export function getPrefixedPath(path: string, prefix: string): string {
         return prefix + "#" + path;
     }
 
-    export function readAnon(path: string, prefix: string): any {
+    /**
+     * Gets the value of a Data Compound bit.
+     * @param path The path to check.
+     * @param prefix The prefix of the Data Compound.
+     */
+    export function read(path: string, prefix: string): any {
         return settings.readJSON(
             getPrefixedPath(
                 path,
@@ -323,14 +317,18 @@ namespace DataHelper {
         ).data;
     }
 
-    export function readSrc(path: string, source: DataCompound): any {
-        return source.read(path);
-    }
-
-    export function clearAll(prefix: string) {
+    /**
+     * Clears all saved settings.
+     */
+    export function clearAll() {
         settings.clear();
     }
 
+    /**
+     * Clears a specific Data Compound bit.
+     * @param path The bit to clear.
+     * @param prefix The prefix of the Data Compound.
+     */
     export function targetedClear(path: string, prefix: string) {
         settings.remove(
             getPrefixedPath(
@@ -342,7 +340,10 @@ namespace DataHelper {
 }
 
 // IMAGERY
-class RenderLayer {
+/**
+ * Creates and renders an image on the screen.
+ */
+class ScreenImage {
     private image: Image;
     private holder: Sprite;
 
@@ -367,7 +368,10 @@ class RenderLayer {
     }
 }
 
-class ToggleableRenderLayer {
+/**
+ * Same as ${@link ScreenImage}, but can be toggled on or off.
+ */
+class ToggleableScreenImage {
     private image: Image;
     private holder: Sprite;
 
@@ -432,51 +436,6 @@ function createImage(width: number, height: number, preColor?: number) {
     return toReturn;
 }
 
-// TIME
-class Countdown {
-    private duration: number;
-
-    private end: () => void;
-    private tick: () => void;
-
-    public constructor(duration: number) {
-        this.duration = duration;
-    }
-
-    public onTick(f: () => void) {
-        this.tick = f;
-    }
-
-    public onEnd(f: () => void) {
-        this.end = f;
-    }
-
-    public begin() {
-        forever(function () {
-            if (this.duration > 0) {
-                this.duration -= 1;
-                if (this.tick != null) {
-                    this.tick();
-                }
-
-                if (this.duration == 0) {
-                    if (this.end != null) {
-                        this.end();
-                    }
-                }
-            }
-        });
-    }
-
-    public getCurrentDuration(): number {
-        return this.duration;
-    }
-
-    public pauseUntilCompleted() {
-        pause(this.duration);
-    }
-}
-
 // SPRITE
 /**
  * Applies the given flags to a sprite.
@@ -493,6 +452,9 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
 }
 
 // CONFIG
+/**
+ * A property for config.
+ */
 class Property<T> {
     private name: string;
     private value: T;
@@ -515,6 +477,9 @@ class Property<T> {
     }
 }
 
+/**
+ * A configuration menu that can be exported as a JSON.
+ */
 class Config {
     private values: Property<any>[];
     private core: any;
@@ -625,4 +590,3 @@ function requireNonNull<T>(value: T, ifNull: () => void): T {
         return value;
     }
 }
-
