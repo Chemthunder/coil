@@ -8,7 +8,8 @@
         "main.ts",
         "README.md",
         "assets.json",
-        "coil.ts"
+        "coil.ts",
+        "building.ts"
     ],
     "testFiles": [
         "test.ts"

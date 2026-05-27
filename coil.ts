@@ -492,6 +492,66 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
     }
 }
 
+// CONFIG
+class Property<T> {
+    private name: string;
+    private value: T;
+
+    public constructor(name: string, value: T) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public getValue(): T {
+        return this.value;
+    }
+
+    public static of<T>(name: string, value: T): Property<T> {
+        return new Property<T>(name, value);
+    }
+}
+
+class Config {
+    private values: Property<any>[];
+    private core: any;
+
+    public constructor() {
+        this.values = [];
+
+        this.core = {};
+    }
+
+    public write<T>(s: string, v: T): void {
+        this.values.push(Property.of(s, v));
+    }
+
+    public writeEntries(p: Property<any>[]) {
+        this.values = p;
+    }
+
+    public sync(): void {
+        let loader = new JsonObject();
+
+        this.values.forEach(function (value: Property<any>) {
+            loader.import(value.getName(), value.getValue());
+        });
+
+        this.core = loader.export();
+    }
+
+    public fetch(id: string) {
+        return this.core[id];
+    }
+
+    public dispatch(): any {
+        return this.core;
+    }
+}
+
 // OTHER
 /**
  * A function that can be stored with code, then run at any time.
@@ -566,20 +626,3 @@ function requireNonNull<T>(value: T, ifNull: () => void): T {
     }
 }
 
-enablePrint()
-
-class Test<T> {
-    private value: T;
-
-    public constructor(value: T) {
-        this.value = value;
-    }
-
-    public static getType(t: Test<any>): any {
-        return typeof t.value;
-    }
-}
-
-let a = new Test<string>("a");
-
-print(Test.getType(a));
