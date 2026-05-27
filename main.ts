@@ -30,3 +30,14 @@ const coilDetails = [
 if (CoilConfig.fetch("IsPublicRelease")) {
     coilDetails.forEach(value => print(value));
 }
+
+/**
+ * DEPRECATED FEATURES
+ * @ can be used with functions as a 'decorator', allowing for code to be run (@sealed)
+ * Usage of `namespace` can instead be `module`,
+ * module Test {
+ *  export const i = 0;
+ * }
+ * 
+ * print(Test.i);
+ */
