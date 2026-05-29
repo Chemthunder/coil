@@ -423,6 +423,22 @@ class ToggleableScreenImage {
     }
 }
 
+class StackedScreenImage {
+    private image: Image;
+    private holder: Sprite;
+
+    public constructor(width: number, height: number, z: number, context: (target: Image, holder: Sprite) => void) {
+        this.image = createImage(
+            width,
+            height
+        );
+
+        this.holder = sprites.create(this.image, SpriteKind.RenderElement);
+
+        context(this.image, this.holder);
+    }
+}
+
 /**
  * Creates an image from the given parameters.
  * @param width The width of the image.
