@@ -568,7 +568,7 @@ class Payload {
         this.operations = [];
     }
 
-    public attach(value: Function) {
+    public attach(value: () => void) {
         this.operations.push(value);
     }
 
