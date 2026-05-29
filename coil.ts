@@ -237,7 +237,7 @@ class Entries {
     public getEntries(): any[] {
         let l: any[] = [];
 
-        this.entries.forEach(function (value: RegistryEntry<any>) {
+        this.entries.forEach(value => {
             l.push(value.getObj());
         });
         
@@ -523,7 +523,7 @@ class Config {
     public sync(): void {
         let loader = new JsonObject();
 
-        this.values.forEach(function (value: Property<any>) {
+        this.values.forEach(value => {
             loader.import(
                 value.getName(),
                 value.getValue()
@@ -573,7 +573,7 @@ class Payload {
     }
 
     public deploy() {
-        this.operations.forEach(function (value: Function) {
+        this.operations.forEach(value => {
             value();
         });
     }
