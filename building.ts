@@ -32,47 +32,11 @@ let playerImg = img`
 `;
 let player = entries.sprite("Player", playerImg);
 
-forEverPixelOfColor(playerImg);
+imageTest(playerImg);
 
-function replaceColor(img: Image, target: number, attach: number) {
-    for (let w = 0; w < img.width; w++) {
-        for (let h = 0; h < img.height; h++) {
-            const pixel = img.getPixel(
-                w,
-                h
-            );
 
-            if (pixel == target) {
-                img.setPixel(
-                    w,
-                    h,
-                    attach
-                );
-            }
-        }
-    }
-}
 
-function replaceAllNonTransparent(img: Image, toSet: number) {
-    for (let w = 0; w < img.width; w++) {
-        for (let h = 0; h < img.height; h++) {
-            const pixel = img.getPixel(
-                w,
-                h
-            );
-
-            if (pixel != game.Color.Transparent) {
-                img.setPixel(
-                    w,
-                    h,
-                    toSet
-                );
-            }
-        }
-    }
-}
-
-function forEverPixelOfColor(img: Image) {
+function imageTest(img: Image) {
     for (let w = 0; w < img.width; w++) {
         for (let h = 0; h < img.height; h++) {
             const pixel = img.getPixel(

@@ -445,6 +445,55 @@ function createImage(width: number, height: number, preColor?: number) {
     return toReturn;
 }
 
+/**
+ * Replaces all pixels of the target color with the attached color.
+ * @param img The image to set.
+ * @param target The color to target.
+ * @param attach The color to replace with.
+ */
+function replaceColor(img: Image, target: number, attach: number) {
+    for (let w = 0; w < img.width; w++) {
+        for (let h = 0; h < img.height; h++) {
+            const pixel = img.getPixel(
+                w,
+                h
+            );
+
+            if (pixel == target) {
+                img.setPixel(
+                    w,
+                    h,
+                    attach
+                );
+            }
+        }
+    }
+}
+
+/**
+ * Replaces all non-transparent pixels with a given color.
+ * @param img The image to set.
+ * @param toSet The color to apply.
+ */
+function replaceAllNonTransparent(img: Image, toSet: number) {
+    for (let w = 0; w < img.width; w++) {
+        for (let h = 0; h < img.height; h++) {
+            const pixel = img.getPixel(
+                w,
+                h
+            );
+
+            if (pixel != game.Color.Transparent) {
+                img.setPixel(
+                    w,
+                    h,
+                    toSet
+                );
+            }
+        }
+    }
+}
+
 // SPRITE
 /**
  * Applies the given flags to a sprite.
@@ -622,3 +671,29 @@ const OnToggleableExecuted = new Payload();
 const OnConfigWritten = new Payload();
 const OnPrint = new Payload();
 const OnPrintEnabled = new Payload();
+
+scene.createRenderable(5, handler => {
+    let size = 30;
+
+    handler.fillCircle(
+        screen.width / 2,
+        screen.height / 2,
+        size + (size / 6) + 5,
+        5
+    );
+    
+    handler.fillCircle(
+        screen.width / 2,
+        screen.height / 2,
+        size + (size / 6),
+        1
+    );
+
+    handler.fillCircle(
+        screen.width / 2,
+        screen.height / 2,
+        size,
+        15
+    );
+
+});
