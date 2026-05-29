@@ -509,6 +509,31 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
     }
 }
 
+function getAllSprites(): Sprite[] {
+    let s = Scene.getInstance().extract();
+
+    let returned: Sprite[] = [];
+    for (let i = 1000; i < 9999; i++) {
+        sprites.allOfKind(i).forEach(sprite => {
+            returned.push(sprite);
+        });
+    }
+
+    sprites.allOfKind(-1).forEach(sprite => {
+        returned.push(sprite);
+    });
+
+    sprites.allOfKind(0).forEach(sprite => {
+        returned.push(sprite);
+    });
+
+    sprites.allOfKind(undefined).forEach(sprite => {
+        returned.push(sprite);
+    });
+
+    return returned;
+}
+
 // CONFIG
 /**
  * A property for config.
@@ -671,29 +696,3 @@ const OnToggleableExecuted = new Payload();
 const OnConfigWritten = new Payload();
 const OnPrint = new Payload();
 const OnPrintEnabled = new Payload();
-
-scene.createRenderable(5, handler => {
-    let size = 30;
-
-    handler.fillCircle(
-        screen.width / 2,
-        screen.height / 2,
-        size + (size / 6) + 5,
-        5
-    );
-    
-    handler.fillCircle(
-        screen.width / 2,
-        screen.height / 2,
-        size + (size / 6),
-        1
-    );
-
-    handler.fillCircle(
-        screen.width / 2,
-        screen.height / 2,
-        size,
-        15
-    );
-
-});
