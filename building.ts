@@ -13,6 +13,12 @@ class PipelineDepo {
         this.lines.push(l);
     }
 
+    public import(pipelines: Pipeline[]) {
+        pipelines.forEach(pipeline => {
+            this.bootstrapNew(pipeline);
+        });
+    }
+
     public lockAndLoad() {
         this.lines.forEach(pipeline => {
             pipeline.assemble();
