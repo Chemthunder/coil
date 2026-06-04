@@ -2,7 +2,7 @@ class PipelineDepo {
     private lines: Pipeline[];
 
     public constructor() {
-
+        this.lines = [];
     }
 
     public getPipelines(): Pipeline[] {
@@ -21,6 +21,8 @@ class PipelineDepo {
         this.lines[0].getPayloads().forEach(load => {
             load.deploy();
         });
+
+        print(`Loaded pipeline`, this.lines[0].getId());
     }
 }
 
@@ -33,33 +35,33 @@ interface Pipeline {
     assemble(): void;
 }
 
-const Liner = new PipelineDepo();
+// const Liner = new PipelineDepo();
 
-class PostPipeline implements Pipeline {
-    public constructor() {
-        this.getDeployDepo().bootstrapNew(this);
-    }
+// class PostPipeline implements Pipeline {
+//     public StartPayload = new Payload();
 
-    public static StartPayload = new Payload();
+//     public constructor() {
+//         this.getDeployDepo().bootstrapNew(this);
+//     }
 
-    public getDeployDepo(): PipelineDepo {
-        return Liner;
-    }
+//     public getDeployDepo(): PipelineDepo {
+//         return Liner;
+//     }
 
-    public getPayloads(): Payload[] {
-        return [
-            PostPipeline.StartPayload
-        ];
-    }
+//     public getPayloads(): Payload[] {
+//         return [
+//             this.StartPayload
+//         ];
+//     }
 
-    public getId(): string {
-        return "post";
-    }
+//     public getId(): string {
+//         return "post";
+//     }
 
-    public assemble() {
-        PostPipeline.StartPayload.attach(function primaryThread() {
-            enablePrint()
-            print("Hi!");
-        });
-    }
-}
+//     public assemble() {
+//         this.StartPayload.attach(function primaryThread() {
+//             enablePrint()
+//             print("Hi!");
+//         });
+//     }
+// }
