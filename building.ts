@@ -27,8 +27,6 @@ class PipelineDepo {
         this.lines[0].getPayloads().forEach(load => {
             load.deploy();
         });
-
-        print(`Loaded pipeline`, this.lines[0].getId());
     }
 }
 
@@ -40,34 +38,3 @@ interface Pipeline {
 
     assemble(): void;
 }
-
-// const Liner = new PipelineDepo();
-
-// class PostPipeline implements Pipeline {
-//     public StartPayload = new Payload();
-
-//     public constructor() {
-//         this.getDeployDepo().bootstrapNew(this);
-//     }
-
-//     public getDeployDepo(): PipelineDepo {
-//         return Liner;
-//     }
-
-//     public getPayloads(): Payload[] {
-//         return [
-//             this.StartPayload
-//         ];
-//     }
-
-//     public getId(): string {
-//         return "post";
-//     }
-
-//     public assemble() {
-//         this.StartPayload.attach(function primaryThread() {
-//             enablePrint()
-//             print("Hi!");
-//         });
-//     }
-// }
