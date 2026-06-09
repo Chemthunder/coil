@@ -9,17 +9,17 @@ class PipelineDepo {
         return this.lines;
     }
 
-    public bootstrapNew(l: Pipeline) {
+    public loadSingular(l: Pipeline) {
         this.lines.push(l);
     }
 
-    public import(pipelines: Pipeline[]) {
+    public load(pipelines: Pipeline[]) {
         pipelines.forEach(pipeline => {
-            this.bootstrapNew(pipeline);
+            this.loadSingular(pipeline);
         });
     }
 
-    public lockAndLoad() {
+    public bootstrap() {
         this.lines.forEach(pipeline => {
             pipeline.assemble();
         });
@@ -28,13 +28,19 @@ class PipelineDepo {
             load.deploy();
         });
     }
+
+    public bootstrapSpecific(id: number) {
+        this.lines.forEach(pipeline => {
+            pipeline.assemble();
+        });
+
+        this.lines[id].getPayloads().forEach(load => {
+            load.deploy();
+        });
+    }
 }
 
 interface Pipeline {
-    getDeployDepo(): PipelineDepo;
-
     getPayloads(): Payload[];
-    getId(): string;
-
     assemble(): void;
 }
