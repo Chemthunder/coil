@@ -445,11 +445,10 @@ class StackedScreenImage {
  * @param height The height of the image.
  */
 function createImage(width: number, height: number, preColor?: number) {
-    let toReturn = image.create(
+    const toReturn = image.create(
         width,
         height
     );
-
     toReturn.fill(preColor);
     return toReturn;
 }
@@ -519,9 +518,9 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
 }
 
 function getAllSprites(): Sprite[] {
-    let s = Scene.getInstance().extract();
-
-    let returned: Sprite[] = [];
+    const s = Scene.getInstance().extract();
+    const returned: Sprite[] = [];
+    
     for (let i = 1000; i < 9999; i++) {
         sprites.allOfKind(i).forEach(sprite => {
             returned.push(sprite);
@@ -620,6 +619,60 @@ class Config {
     }
 }
 
+// PIPELINE
+/**
+ * The depo used to run and store pipelines.
+ */
+class PipelineDepo {
+    private lines: Pipeline[];
+
+    public constructor() {
+        this.lines = [];
+    }
+
+    public getPipelines(): Pipeline[] {
+        return this.lines;
+    }
+
+    public loadSingular(l: Pipeline) {
+        this.lines.push(l);
+    }
+
+    public load(pipelines: Pipeline[]) {
+        pipelines.forEach(pipeline => {
+            this.loadSingular(pipeline);
+        });
+    }
+
+    public bootstrap() {
+        this.lines.forEach(pipeline => {
+            pipeline.assemble();
+        });
+
+        this.lines[0].getPayloads().forEach(load => {
+            load.deploy();
+        });
+    }
+
+    public bootstrapSpecific(id: number) {
+        this.lines.forEach(pipeline => {
+            pipeline.assemble();
+        });
+
+        this.lines[id].getPayloads().forEach(load => {
+            load.deploy();
+        });
+    }
+}
+
+/**
+ * The base interface for pipelines. Must be implemented in all pipelines.
+ */
+interface Pipeline {
+    getPayloads(): Payload[];
+    assemble(): void;
+}
+
 // OTHER
 /**
  * A function that can be stored with code, then run at any time.
@@ -691,5 +744,27 @@ function requireNonNull<T>(value: T, ifNull: () => void): T {
         return null;
     } else {
         return value;
+    }
+}
+
+namespace Util {
+    export const centerX = screen.width / 2;
+    export const centerY = screen.height / 2;
+
+    export function placeAtCenter(sprite: Sprite) {
+        sprite.setPosition(
+            centerX,
+            centerY
+        );
+    }
+
+    export function iterateList(list: any[], currentValue: any): any {
+        let index = list.indexOf(currentValue);
+
+        if (index >= (list.length - 1)) {
+            return list[0];
+        } else {
+            return list[index += 1];
+        }
     }
 }

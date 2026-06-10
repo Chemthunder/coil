@@ -1,1 +1,18 @@
-//
+# Full Feature List of Coil
+- A simplified console logging system used through the `print` and `enablePrint` functions.
+- A `DataCompound` system for easier usage of `settings`.
+- A system to more easily create JSONs in code.
+- A registration system through the `Entries` class, allowing for storage of sprites and other such things with string keys that can be referenced from said string key later.
+- Various sprite utilities.
+- A few functions to more easily create and edit images.
+- A simple Config system.
+- A few classes allowing for a sprite and image to be created as one through the `ScreenImage`, `ToggleableScreenImage`, and `StackedScreenImage` classes.
+- A few functions to run code when needed with the `Runnable` class or through your project's `Game` instance.
+- A system for creation of game metadata as an object that can be interacted with through code with the `Game` class.
+- A way to easily interact with MakeCode's Camera and Scene systems through the `CameraInstance` and `SceneInstance` classes.
+- Plenty of custom `SpriteKind`s for utility.
+- An `Exception` class for consistency in throwing exceptions with other languages (to the best of my ability).
+- A `requireNonNull` function to run code if an object is null.
+- A way to get all sprites which have a `SpriteKind`.
+- An easy to understand `Pipeline` system allowing for lists of `Payloads` to be run in sequence, making larger games or various games within one project easier.
+- Several helper namespaces to aid use of Coil features: `DataHelper`, `MetaDataBuilder`, and so on.
