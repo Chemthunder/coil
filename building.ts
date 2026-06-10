@@ -188,3 +188,4 @@ class SpriteBuilder {
 function input(btn: controller.Button, handler: () => void) {
     btn.onEvent(ControllerButtonEvent.Pressed, handler);
 }
+//
