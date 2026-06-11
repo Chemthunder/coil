@@ -808,6 +808,18 @@ class Config {
 }
 
 // PIPELINE
+class IdContained {
+    private id: string;
+
+    public constructor(id: string) {
+        this.id = id;
+    }
+
+    public getId(): string {
+        return this.id;
+    }
+}
+
 /**
  * The depo used to run and store pipelines.
  */
@@ -827,29 +839,35 @@ class PipelineDepo {
     }
 
     public load(pipelines: Pipeline[]) {
-        pipelines.forEach(pipeline => {
-            this.loadSingular(pipeline);
-        });
+        pipelines.forEach(pipeline => this.loadSingular(pipeline));
+    }
+
+    public construct(pipeline: Pipeline) {
+        this.lines.forEach(pipeline => pipeline.assemble());
+        pipeline.getPayloads().forEach(load => load.deploy());
     }
 
     public bootstrap() {
-        this.lines.forEach(pipeline => {
-            pipeline.assemble();
-        });
-
-        this.lines[0].getPayloads().forEach(load => {
-            load.deploy();
-        });
+        this.construct(this.lines[0]);
     }
 
-    public bootstrapSpecific(id: number) {
-        this.lines.forEach(pipeline => {
-            pipeline.assemble();
-        });
+    public bootstrapNumeric(id: number) {
+        this.construct(this.lines[id]);
+    }
 
-        this.lines[id].getPayloads().forEach(load => {
-            load.deploy();
-        });
+    public bootstrapId(id: string) {
+        let toDeploy: Pipeline = null;
+
+        for (let pipeline of this.lines) {
+            if (pipeline instanceof IdContained) {
+                if (pipeline.getId() == id) {
+                    toDeploy = pipeline;
+                    break;
+                }
+            }
+        }
+
+        this.construct(toDeploy);
     }
 }
 
