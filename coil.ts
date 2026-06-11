@@ -298,7 +298,7 @@ class Entries {
         this.entries.forEach(value => {
             l.push(value.getObj());
         });
-        
+
         return l;
     }
 
@@ -583,7 +583,7 @@ function applyFlags(sprite: Sprite, flags: SpriteFlag[]) {
 function getAllSprites(): Sprite[] {
     const s = Scene.getInstance().extract();
     const returned: Sprite[] = [];
-    
+
     for (let i = 1000; i < 9999; i++) {
         sprites.allOfKind(i).forEach(sprite => {
             returned.push(sprite);
@@ -805,78 +805,6 @@ class Config {
     public dispatch(): any {
         return this.core;
     }
-}
-
-// PIPELINE
-class IdContained {
-    private id: string;
-
-    public constructor(id: string) {
-        this.id = id;
-    }
-
-    public getId(): string {
-        return this.id;
-    }
-}
-
-/**
- * The depo used to run and store pipelines.
- */
-class PipelineDepo {
-    private lines: Pipeline[];
-
-    public constructor() {
-        this.lines = [];
-    }
-
-    public getPipelines(): Pipeline[] {
-        return this.lines;
-    }
-
-    public loadSingular(l: Pipeline) {
-        this.lines.push(l);
-    }
-
-    public load(pipelines: Pipeline[]) {
-        pipelines.forEach(pipeline => this.loadSingular(pipeline));
-    }
-
-    public construct(pipeline: Pipeline) {
-        this.lines.forEach(pipeline => pipeline.assemble());
-        pipeline.getPayloads().forEach(load => load.deploy());
-    }
-
-    public bootstrap() {
-        this.construct(this.lines[0]);
-    }
-
-    public bootstrapNumeric(id: number) {
-        this.construct(this.lines[id]);
-    }
-
-    public bootstrapId(id: string) {
-        let toDeploy: Pipeline = null;
-
-        for (let pipeline of this.lines) {
-            if (pipeline instanceof IdContained) {
-                if (pipeline.getId() == id) {
-                    toDeploy = pipeline;
-                    break;
-                }
-            }
-        }
-
-        this.construct(toDeploy);
-    }
-}
-
-/**
- * The base interface for pipelines. Must be implemented in all pipelines.
- */
-interface Pipeline {
-    getPayloads(): Payload[];
-    assemble(): void;
 }
 
 // OTHER

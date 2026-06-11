@@ -9,7 +9,8 @@
         "README.md",
         "assets.json",
         "coil.ts",
-        "building.ts"
+        "building.ts",
+        "coil_advanced.ts"
     ],
     "testFiles": [
         "test.ts"
