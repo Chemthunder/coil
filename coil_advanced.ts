@@ -175,7 +175,12 @@ namespace Builders {
             return built;
         }
     }
+}
 
+namespace Editor {
+    /**
+     * Allows easy editing of images
+     */
     export class ImageEditor {
         private core: Image;
 
@@ -183,6 +188,7 @@ namespace Builders {
 
         public constructor(core: Image) {
             this.core = core;
+            this.operations = new Payload();
         }
 
         public drawLine(start: Vec2, end: Vec2, color: number): ImageEditor {
@@ -265,7 +271,53 @@ namespace Builders {
             return this;
         }
 
-        public fillPoly4(): ImageEditor {
+        public fillPoly4(first: Vec2, second: Vec2, third: Vec2, end: Vec2, color: number): ImageEditor {
+            this.operations.attach(() => this.core.fillPolygon4(
+                first.getX(),
+                first.getY(),
+                second.getX(),
+                second.getY(),
+                third.getX(),
+                third.getY(),
+                end.getX(),
+                end.getY(),
+                color
+            ));
+            return this;
+        }
+
+        public scroll(val: Vec2): ImageEditor {
+            this.operations.attach(() => this.core.scroll(val.getX(), val.getY()));
+            return this;
+        }
+
+        public transpose(): ImageEditor {
+            this.operations.attach(() => this.core.transposed());
+            return this;
+        }
+
+        public flip(axis: Axis): ImageEditor {
+            this.operations.attach(() => axis == Axis.X ? this.core.flipX() : this.core.flipY());
+            return this;
+        }
+
+        public stretch(axis?: Axis): ImageEditor {
+            this.operations.attach(() => {
+                if (axis != null) {
+                    if (axis == Axis.X) {
+                        this.core.doubledX();
+                    } else {
+                        this.core.doubledY();
+                    }
+                } else {
+                    this.core.doubled();
+                }
+            });
+            return this;
+        }
+
+        public setPixel(pos: Vec2, color: number): ImageEditor {
+            this.operations.attach(() => this.core.setPixel(pos.getX(), pos.getY(), color));
             return this;
         }
 
@@ -275,10 +327,94 @@ namespace Builders {
         }
     }
 
-    enum Axis {
-        X,
-        Y
+    /**
+     * Allows easy editing of the scene's settings.
+     */
+    export class SceneEditor {
+        private bgColor: number;
+        private bgImage: Image;
+
+        private infoBgC: number;
+        private infoFontC: number;
+        private infoBorderC: number;
+        private lifeImage: Image;
+
+        private followedSprite: Sprite;
+
+        private showScore: boolean;
+        private showLife: boolean;
+        private showCountdown: boolean;
+
+        public constructor() { }
+
+        public withBackgroundColor(val: number): SceneEditor {
+            this.bgColor = val;
+            return this;
+        }
+
+        public withBackgroundImage(val: Image): SceneEditor {
+            this.bgImage = val;
+            return this;
+        }
+
+        public withInfoBackgroundColor(val: number): SceneEditor {
+            this.infoBgC = val;
+            return this;
+        }
+
+        public withInfoFontColor(val: number): SceneEditor {
+            this.infoFontC = val;
+            return this;
+        }
+
+        public withInfoBorderColor(val: number): SceneEditor {
+            this.infoBorderC = val;
+            return this;
+        }
+
+        public withInfoLifeImage(val: Image): SceneEditor {
+            this.lifeImage = val;
+            return this;
+        }
+
+        public withFollowedSprite(val: Sprite): SceneEditor {
+            this.followedSprite = val;
+            return this;
+        }
+
+        public withShowScore(val: boolean): SceneEditor {
+            this.showScore = val;
+            return this;
+        }
+
+        public withShowLife(val: boolean): SceneEditor {
+            this.showLife = val;
+            return this;
+        }
+
+        public withShowCountdown(val: boolean): SceneEditor {
+            this.showCountdown = val;
+            return this;
+        }
+
+        public apply() {
+            if (this.bgColor != null) scene.setBackgroundColor(this.bgColor);
+            if (this.bgImage != null) scene.setBackgroundImage(this.bgImage);
+
+            if (this.followedSprite != null) scene.cameraFollowSprite(this.followedSprite);
+
+            if (this.infoBgC != null) info.setBackgroundColor(this.infoBgC);
+            if (this.infoFontC != null) info.setFontColor(this.infoFontC);
+            if (this.infoBorderC != null) info.setBorderColor(this.infoBorderC);
+            if (this.lifeImage != null) info.setLifeImage(this.lifeImage);
+
+            if (this.showScore != null) info.showScore(this.showScore);
+            if (this.showLife != null) info.showLife(this.showLife);
+            if (this.showCountdown != null) info.showCountdown(this.showCountdown);
+        }
     }
+
+    enum Axis { X, Y };
 }
 
 // PIPELINE
