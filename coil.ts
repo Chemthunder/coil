@@ -295,10 +295,7 @@ class Entries {
     public getEntries(): any[] {
         let l: any[] = [];
 
-        this.entries.forEach(value => {
-            l.push(value.getObj());
-        });
-
+        this.entries.forEach(value => l.push(value.getObj()));
         return l;
     }
 
@@ -502,6 +499,72 @@ class StackedScreenImage {
     }
 }
 
+class TextDisplay {
+    private text: string;
+
+    private holder: Sprite;
+    private render: Image;
+
+    private textParams: Vec2;
+
+    private textPos: Vec3;
+
+    private font: image.Font;
+
+    public constructor(text: string, textColor: number, textSize: number, pos: Vec3, centered: boolean, font: image.Font) {
+        this.text = text;
+        this.textParams = new Vec2(textColor, textSize);
+        this.textPos = pos;
+        this.font = font;
+
+        this.render = createImage(text.length * 15, 90);
+        this.holder = sprites.create(this.render, TextDisplay.Text);
+
+        this.holder.setPosition(pos.getX(), pos.getY());
+
+        this.holder.scale = textSize;
+
+        this.draw(centered);
+    }
+
+    private draw(center: boolean) {
+        if (center) {
+            this.render.printCenter(
+                this.text,
+                this.render.height / 2,
+                this.getTextColor(),
+                this.font
+            );
+        } else {
+            this.render.print(
+                this.text,
+                this.render.width / 2,
+                this.render.height / 2,
+                this.getTextColor(),
+                this.font
+            );
+        }
+    }
+
+    public getText(): string {
+        return this.text;
+    }
+
+    public getTextColor(): number {
+        return this.textParams.getX();
+    }
+
+    public getTextSize(): number {
+        return this.textParams.getY();
+    }
+
+    public getTextPos(): Vec3 {
+        return this.textPos;
+    }
+
+    public static readonly Text = SpriteKind.create();
+}
+
 /**
  * Creates an image from the given parameters.
  * @param width The width of the image.
@@ -585,149 +648,13 @@ function getAllSprites(): Sprite[] {
     const returned: Sprite[] = [];
 
     for (let i = 1000; i < 9999; i++) {
-        sprites.allOfKind(i).forEach(sprite => {
-            returned.push(sprite);
-        });
+        sprites.allOfKind(i).forEach(sprite => returned.push(sprite));
     }
 
-    sprites.allOfKind(-1).forEach(sprite => {
-        returned.push(sprite);
-    });
-
-    sprites.allOfKind(0).forEach(sprite => {
-        returned.push(sprite);
-    });
-
-    sprites.allOfKind(undefined).forEach(sprite => {
-        returned.push(sprite);
-    });
-
+    sprites.allOfKind(-1).forEach(sprite => returned.push(sprite));
+    sprites.allOfKind(0).forEach(sprite => returned.push(sprite));
+    sprites.allOfKind(undefined).forEach(sprite => returned.push(sprite));
     return returned;
-}
-
-class SpriteBuilder {
-    private image: Image;
-    private kind: number;
-
-    private moveSpeed: Vec2;
-    private acceleration: Vec2;
-    private velocity: Vec2;
-    private position: Vec3;
-    private scale: Vec2;
-    private friction: Vec2;
-    private lifespan: number;
-
-    private flags: SpriteFlag[];
-
-    public constructor() {
-        this.flags = [];
-    }
-
-    public withImage(val: Image): SpriteBuilder {
-        this.image = val;
-        return this;
-    }
-
-    public withKind(val: number): SpriteBuilder {
-        this.kind = val;
-        return this;
-    }
-
-    public withMoveSpeed(x: number, y: number): SpriteBuilder {
-        this.moveSpeed = new Vec2(x, y);
-        return this;
-    }
-
-    public withAcceleration(x: number, y: number): SpriteBuilder {
-        this.acceleration = new Vec2(x, y);
-        return this;
-    }
-
-    public withVelocity(x: number, y: number): SpriteBuilder {
-        this.velocity = new Vec2(x, y);
-        return this;
-    }
-
-    public withPosition(x: number, y: number, z?: number): SpriteBuilder {
-        this.position = new Vec3(x, y, z != null ? z : null);
-        return this;
-    }
-
-    public withFlag(val: SpriteFlag): SpriteBuilder {
-        this.flags.push(val);
-        return this;
-    }
-
-    public withScale(x: number, y: number): SpriteBuilder {
-        this.scale = new Vec2(x, y);
-        return this;
-    }
-
-    public withFriction(x: number, y: number): SpriteBuilder {
-        this.friction = new Vec2(x, y);
-        return this;
-    }
-
-    public withLifespan(val: number): SpriteBuilder {
-        this.lifespan = val;
-        return this;
-    }
-
-    public build(): Sprite {
-        const built = sprites.create(
-            this.image,
-            this.kind
-        );
-
-        if (this.acceleration != null) {
-            built.ax = this.acceleration.getX();
-            built.ay = this.acceleration.getY();
-        }
-
-        if (this.position != null) {
-            built.setPosition(
-                this.position.getX(),
-                this.position.getY()
-            );
-
-            built.z = this.position.getZ();
-        }
-
-        applyFlags(
-            built,
-            this.flags
-        );
-
-        if (this.moveSpeed != null) {
-            controller.moveSprite(
-                built,
-                this.moveSpeed.getX(),
-                this.moveSpeed.getY()
-            );
-        }
-
-        if (this.velocity != null) {
-            built.setVelocity(
-                this.velocity.getX(),
-                this.velocity.getY()
-            );
-        }
-
-        if (this.scale != null) {
-            built.sx = this.scale.getX();
-            built.sy = this.scale.getY();
-        }
-
-        if (this.friction != null) {
-            built.fx = this.friction.getX();
-            built.fy = this.friction.getY();
-        }
-
-        if (this.lifespan != null) {
-            built.lifespan = this.lifespan;
-        }
-        return built;
-    }
 }
 
 // CONFIG
@@ -838,9 +765,7 @@ class Payload {
     }
 
     public deploy() {
-        this.operations.forEach(value => {
-            value();
-        });
+        this.operations.forEach(value => value());
     }
 }
 
@@ -945,8 +870,21 @@ namespace Util {
     ];
 }
 
+/**
+ * Ease of use version of controller.A.onEvent(...)
+ * @param btn The controller button to check for.
+ * @param handler The code to run.
+ */
 function input(btn: controller.Button, handler: () => void) {
     btn.onEvent(ControllerButtonEvent.Pressed, handler);
+}
+
+/**
+ * Ease of use version of forever.
+ * @param a The code to run.
+ */
+function eter(a: () => void) {
+    forever(a);
 }
 
 function tile(color?: number): Image {

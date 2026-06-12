@@ -2,9 +2,9 @@ const Coil = new Game(
     "Coil",
     {
         author: "Chemthunder",
-        version: 1.6,
+        version: 1.7,
         license: "ARR",
-        desc: "A compact library of commonly used utilities by Chemthunder."
+        desc: "A wide array of tools for project construction, creation, and ease of use."
     }
 );
 
