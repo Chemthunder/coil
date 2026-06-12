@@ -414,7 +414,7 @@ namespace Editor {
         }
     }
 
-    enum Axis { X, Y };
+    export enum Axis { X, Y };
 }
 
 // PIPELINE
