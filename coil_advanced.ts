@@ -472,3 +472,39 @@ interface Pipeline {
 
     getId?(): string;
 }
+
+
+/// EXPERIMENTAL
+class TypedRunnable<T> {
+    private operation: (val: T) => void;
+
+    public constructor(func: (val: T) => void) {
+        this.operation = func;
+    }
+
+    public run(val: T) {
+        this.operation(val);
+    }
+}
+
+class TypedPayload<T, R> {
+    private operations: TypedRunnable<T>[];
+
+    public constructor() {
+        this.operations = [];
+    }
+
+    public attach(func: (val: T) => R) {
+        this.operations.push(new TypedRunnable<T>(func));
+    }
+
+    public deploy(target: T) {
+        this.operations.forEach(operation => operation.run(target));
+    }
+}
+
+const a = new TypedPayload<Sprite, boolean>();
+
+a.attach(sprite => {
+    return true;
+});
